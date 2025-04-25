@@ -37,7 +37,7 @@ class FundTransferTransaction(models.Model):
     remitter_name = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=18, decimal_places=2)
     currency = models.CharField(max_length=10, default="INR")
-    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES)
+    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES,default="IMPS")
     payment_description = models.CharField(max_length=120, blank=True, null=True)
     message_type = models.CharField(max_length=10, blank=True, null=True)
 
