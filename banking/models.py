@@ -55,3 +55,10 @@ class FundTransferTransaction(models.Model):
 
     def __str__(self):
         return f"{self.transaction_type} - {self.transaction_reference_no or self.transaction_id or 'N/A'}"
+
+class Users_ips(models.Model):
+    ip_address = models.GenericIPAddressField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user_id} - {self.ip_address}"
