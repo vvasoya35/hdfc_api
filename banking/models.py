@@ -51,14 +51,36 @@ class FundTransferTransaction(models.Model):
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    retry_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.transaction_type} - {self.transaction_reference_no or self.transaction_id or 'N/A'}"
+    
+    def save(self, *args, **kwargs):
+        # 👉 Rule: If transaction is RTGS, set message_type to "R41"
+        if self.transaction_type == "RTGS":
+            self.message_type = "R41"
+        super().save(*args, **kwargs)
 
 class Users_ips(models.Model):
     ip_address = models.GenericIPAddressField()
+    notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user_id} - {self.ip_address}"
+
+class TransactionConfig(models.Model):
+    debit_account_number = models.CharField(max_length=20)
+    remitter_name = models.CharField(max_length=100)
+    client_id = models.CharField(max_length=100)
+    secret_hex_key = models.CharField(max_length=255)
+    private_key = models.TextField()  # store your RSA private key
+    kid = models.CharField(max_length=100)  # key id for JWT
+    sub = models.CharField(max_length=100)
+    iss = models.CharField(max_length=100)
+    aud = models.URLField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Transaction Config" 9
+        
