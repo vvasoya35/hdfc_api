@@ -1,5 +1,28 @@
 from django.contrib import admin
 from .models import FundTransferTransaction, Beneficiary, TransactionConfig, Users_ips
+from django.contrib import admin
+from django.urls import path
+from django.http import JsonResponse
+from .services import fetch_bank_balance
+
+class TransactionConfigAdmin(admin.ModelAdmin):
+    change_list_template = "admin/transaction_config_change_list.html"  # custom template
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('fetch-balance/', self.admin_site.admin_view(self.fetch_balance), name='fetch-balance'),
+        ]
+        return custom_urls + urls
+
+    def fetch_balance(self, request):
+        try:
+            balance_data = fetch_bank_balance()
+            return JsonResponse(balance_data)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+admin.site.register(TransactionConfig, TransactionConfigAdmin)
 
 @admin.register(FundTransferTransaction)
 class FundTransferTransactionAdmin(admin.ModelAdmin):
@@ -43,5 +66,3 @@ class Users_ipsAdmin(admin.ModelAdmin):
     )
     search_fields = ('ip_address', 'notes')
     ordering = ('-created_at',)
-
-admin.site.register(TransactionConfig)

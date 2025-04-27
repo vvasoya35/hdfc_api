@@ -3,14 +3,21 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import PaymentRequestSerializer, FundTransferRequestSerializer
+from .serializers import PaymentRequestSerializer, FundTransferRequestSerializer, GetBalanceRequestSerializer
 from .models import Beneficiary, FundTransferTransaction,TransactionConfig
-from .services import transaction_process_imps
+from .services import transaction_process_imps,get_transaction_status, get_auth_tokens, DynamicIVJce
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 import uuid
 from .permissions import IsAuthorizedIP
+import json
+import ast
+import requests
+from django.http import JsonResponse
+from .services import fetch_bank_balance
+
+
 
 class FundTransferAPIView(APIView):
     """
@@ -55,7 +62,6 @@ class FundTransferAPIView(APIView):
                     payment_description=payment_description,
                     txn_status="INITIATED",
                     txn_received_timestamp=timezone.now(),
-                    transaction_reference_no=str(uuid.uuid4()).replace("-", "")[:16]
                 )
                 transaction.save()
 
@@ -72,3 +78,76 @@ class FundTransferAPIView(APIView):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+import pdb
+class TransactionStatusAPIView(APIView):
+    """
+    Transaction Status API
+    """
+    permission_classes = [IsAuthorizedIP]
+
+    def post(self, request, *args, **kwargs):
+        transaction_id = request.data.get('transactionReferenceNumber')
+        if not transaction_id:
+            return Response({"error": "Transaction ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            transaction = FundTransferTransaction.objects.get(transaction_reference_no=transaction_id)
+            transaction_status = transaction.txn_status
+                # pdb.set_trace()
+            if transaction_status == "INITIATED":
+                service_response = get_transaction_status(transaction)
+                return Response(service_response, status=status.HTTP_200_OK)
+            else:
+                response_data = transaction.response_data
+                # pdb.set_trace()
+                if response_data:
+                    try:
+                        response_data = json.loads(response_data)
+                    except:
+                        response_data = ast.literal_eval(response_data)
+
+                    return Response(response_data, status=status.HTTP_200_OK)
+                else:
+                    return Response({"error": "No response data available."}, status=status.HTTP_404_NOT_FOUND)
+
+        except FundTransferTransaction.DoesNotExist:
+            return Response({"error": "Transaction not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+def Get_balance_view(request):
+    balance = fetch_bank_balance()
+    return JsonResponse(balance, safe=False)
+
+
+# def Get_balance_view(request):
+#     get_balsnce_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"
+#     config = TransactionConfig.objects.first()
+#     get_payload = {
+#             "prefetchAccountReq": {
+#                 "CBSTellerBranch": "",
+#                 "CBSTellerID": "",
+#                 "accountNumber": config.debit_account_number
+#             }
+#         }
+#     data = json.dumps(get_payload)  # ✔️ convert dict to JSON string
+#     secret_hex_key = config.secret_hex_key
+#     encrypted = DynamicIVJce.encrypt(data, secret_hex_key) 
+#     access_token = get_auth_tokens()
+#     if access_token:
+#         headers = {
+#         "Authorization": f"Bearer {access_token}",
+#         "Content-Type": "application/x-www-form-urlencoded",
+#         "source": "KAC",
+#         "correlationId" : "523134453sadaazd",
+#         "Content-Type":"application/octet-stream"
+#         }
+#     encrypted_payload =  encrypted
+
+#     fund_t_response = requests.post(get_balsnce_url, headers=headers, data=encrypted_payload.encode("utf-8"))
+
+#     encrypted_payload = fund_t_response.text
+
+#     decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
+#     decrypted_json = json.loads(decrypted)
+#     return JsonResponse(decrypted_json, safe=False)

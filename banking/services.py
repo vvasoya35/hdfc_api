@@ -127,3 +127,111 @@ def transaction_process_imps(transaction):
     else:
         print("Encryption failed.")
         return {"error": "Encryption failed."}
+
+
+def get_transaction_status(transaction):
+    transaction_status = "https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus"
+    transactionDate = transaction.created_at.strftime("%d%m%Y")
+    transactionReferenceNumber = transaction.transaction_reference_no
+    config = TransactionConfig.objects.first()
+    secret_hex_key = config.secret_hex_key.replace('\\n', '\n')
+    cs_paylod = {
+        "paymentTransactionStatusReq":
+                {
+                    "tellerBranch":"",
+                    "tellerID":"",
+                    "transactionType":transaction.transaction_type,
+                    "transactionReferenceNumber":transactionReferenceNumber,
+                    "paymentReferenceNumber":"",
+                    "transactionDate":transactionDate
+                }
+        }
+    
+    access_token = get_auth_tokens()
+    if access_token:
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "source": "KAC",
+            "correlationId" : "523134453sadaazd",
+            "Content-Type":"application/octet-stream"
+        }
+
+        data = json.dumps(cs_paylod) 
+
+        encrypted = DynamicIVJce.encrypt(data, secret_hex_key) 
+        if encrypted:
+            encrypted_payload = encrypted
+            fund_t_response = requests.post(transaction_status, headers=headers, data=encrypted_payload.encode("utf-8"))
+
+            fund_t_response = requests.post(transaction_status, headers=headers, data=encrypted_payload.encode("utf-8"))
+
+            encrypted_payload = fund_t_response.text            
+
+            decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
+
+            if decrypted:
+                    print("Decrypted Payload:")
+                    # print(decrypted)
+
+                    result = json.loads(decrypted)
+
+                    transaction.response_data = result
+                    transaction.http_status_code = fund_t_response.status_code
+                    transaction.txn_updated_timestamp = timezone.now()
+                    transaction.txn_received_timestamp = result['paymentTransactionStatusResp']['metaData']['time']
+                    transaction.message_type = result['paymentTransactionStatusResp']['metaData']['message']
+                    if result['paymentTransactionStatusResp']['metaData']['status'] == "ERROR":
+                        transaction.txn_status = result['paymentTransactionStatusResp']['metaData']['status']
+                    else:
+                        transaction.txn_status = result['paymentTransactionStatusResp']['resourceData']['status']
+                        transaction.transaction_reference_no = result['paymentTransactionStatusResp']['resourceData']['transactionReferenceNumber']
+                    transaction.save()
+                    return result
+            else:
+                    print("Decryption failed.")
+                    return {"error": "Decryption failed."}
+            
+        else:
+            print("Encryption failed.")
+            return {"error": "Encryption failed."}
+    else:
+        print("Failed to get access token.")
+        return {"error": "Failed to get access token."}
+
+
+
+def fetch_bank_balance():
+    get_balance_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"
+    config = TransactionConfig.objects.first()
+
+    get_payload = {
+        "prefetchAccountReq": {
+            "CBSTellerBranch": "",
+            "CBSTellerID": "",
+            "accountNumber": config.debit_account_number
+        }
+    }
+    data = json.dumps(get_payload)
+
+    secret_hex_key = config.secret_hex_key
+    encrypted = DynamicIVJce.encrypt(data, secret_hex_key) 
+
+    access_token = get_auth_tokens()
+    if access_token:
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "source": "KAC",
+            "correlationId": "523134453sadaazd",
+            "Content-Type": "application/octet-stream"
+        }
+        fund_t_response = requests.post(get_balance_url, headers=headers, data=encrypted.encode("utf-8"))
+
+        encrypted_payload = fund_t_response.text
+        decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
+        decrypted_json = json.loads(decrypted)
+
+        return decrypted_json
+
+    else:
+        raise Exception("Access token not found")

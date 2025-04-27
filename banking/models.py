@@ -55,7 +55,8 @@ class FundTransferTransaction(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.transaction_type} - {self.transaction_reference_no or self.transaction_id or 'N/A'}"
+        return f"{self.transaction_type} - {self.transaction_reference_no}"
+        # return f"{self.transaction_type} - {self.transaction_reference_no or self.transaction_id or 'N/A'}"
     
     def save(self, *args, **kwargs):
         # 👉 Rule: If transaction is RTGS, set message_type to "R41"

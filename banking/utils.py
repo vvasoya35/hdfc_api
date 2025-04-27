@@ -8,6 +8,8 @@ import os
 import uuid
 import datetime
 import pytz
+import requests
+import json
 
 # Helper functions
 
@@ -36,3 +38,4 @@ class DynamicIVJce:
         cipher = AES.new(key, AES.MODE_CBC, iv)
         decrypted = unpad(cipher.decrypt(encrypted_data[16:]), AES.block_size)
         return decrypted.decode('utf-8')
+
