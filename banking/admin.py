@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import FundTransferTransaction, Beneficiary
+from .models import FundTransferTransaction, Beneficiary, TransactionConfig, Users_ips
 
 @admin.register(FundTransferTransaction)
 class FundTransferTransactionAdmin(admin.ModelAdmin):
@@ -32,3 +32,16 @@ class BeneficiaryAdmin(admin.ModelAdmin):
     )
     search_fields = ('name', 'account_number', 'ifsc_code')
     ordering = ('-created_at',)
+
+@admin.register(Users_ips)
+class Users_ipsAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'ip_address',
+        'notes',
+        'created_at',
+    )
+    search_fields = ('ip_address', 'notes')
+    ordering = ('-created_at',)
+
+admin.site.register(TransactionConfig)

@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+import random
 
 # Create your models here.
 class Beneficiary(models.Model):
@@ -28,6 +29,7 @@ class FundTransferTransaction(models.Model):
         ("ACPT", "Accepted"),
         ("REJECTED", "Rejected"),
         ("FAILED", "Failed"),
+        ("ERROR", "Error"),
     ]
 
     beneficiary = models.ForeignKey("Beneficiary", on_delete=models.PROTECT)
@@ -59,7 +61,18 @@ class FundTransferTransaction(models.Model):
         # 👉 Rule: If transaction is RTGS, set message_type to "R41"
         if self.transaction_type == "RTGS":
             self.message_type = "R41"
+
+        if not self.transaction_id:
+            self.transaction_id = self.generate_unique_transaction_id()
+
         super().save(*args, **kwargs)
+
+    def generate_unique_transaction_id(self):
+        while True:
+            random_id = ''.join([str(random.randint(0, 9)) for _ in range(11)])
+            if not FundTransferTransaction.objects.filter(transaction_id=random_id).exists():
+                return random_id
+
 
 class Users_ips(models.Model):
     ip_address = models.GenericIPAddressField()
@@ -67,7 +80,7 @@ class Users_ips(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user_id} - {self.ip_address}"
+        return f"{self.ip_address}"
 
 class TransactionConfig(models.Model):
     debit_account_number = models.CharField(max_length=20)
