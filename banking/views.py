@@ -11,14 +11,14 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAdminUser
 from django.utils import timezone
 import uuid
-from .permissions import IsAuthorizedIP
+from .permissions import IsAuthorizedIP, IsSuperUser
 import json
 import ast
 import requests
 from django.http import JsonResponse
 from .services import fetch_bank_balance
-
-
+from .permissions import is_authorized_ip
+from django.contrib.auth import get_user
 
 class FundTransferAPIView(APIView):
     """
@@ -115,46 +115,33 @@ class TransactionStatusAPIView(APIView):
         except FundTransferTransaction.DoesNotExist:
             return Response({"error": "Transaction not found."}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET'])
-@permission_classes([IsAdminUser, IsAuthorizedIP])
+@csrf_exempt
 def Get_balance_view(request):
-    """
-    Only Admin + Authorized IP can access this
-    """
+ 
+    user = get_user(request)
+
+    if user.is_authenticated and user.is_superuser:
+        pass
+    elif is_authorized_ip(request):
+        pass  
+    else:
+        return JsonResponse({'error': 'Not authorized'}, status=403)
+
     try:
-        balance_data = fetch_bank_balance()  # your existing logic
-        return Response(balance_data)
+        balance_data = fetch_bank_balance()
+        return JsonResponse(balance_data, safe=False)
     except Exception as e:
-        return Response({'error': str(e)}, status=500)
+        return JsonResponse({'error': str(e)}, status=500)
 
+
+# @api_view(['GET'])
+# @permission_classes([IsSuperUser, IsAuthorizedIP])
 # def Get_balance_view(request):
-#     get_balsnce_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"
-#     config = TransactionConfig.objects.first()
-#     get_payload = {
-#             "prefetchAccountReq": {
-#                 "CBSTellerBranch": "",
-#                 "CBSTellerID": "",
-#                 "accountNumber": config.debit_account_number
-#             }
-#         }
-#     data = json.dumps(get_payload)  # ✔️ convert dict to JSON string
-#     secret_hex_key = config.secret_hex_key
-#     encrypted = DynamicIVJce.encrypt(data, secret_hex_key) 
-#     access_token = get_auth_tokens()
-#     if access_token:
-#         headers = {
-#         "Authorization": f"Bearer {access_token}",
-#         "Content-Type": "application/x-www-form-urlencoded",
-#         "source": "KAC",
-#         "correlationId" : "523134453sadaazd",
-#         "Content-Type":"application/octet-stream"
-#         }
-#     encrypted_payload =  encrypted
-
-#     fund_t_response = requests.post(get_balsnce_url, headers=headers, data=encrypted_payload.encode("utf-8"))
-
-#     encrypted_payload = fund_t_response.text
-
-#     decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
-#     decrypted_json = json.loads(decrypted)
-#     return JsonResponse(decrypted_json, safe=False)
+#     """
+#     Only Admin + Authorized IP can access this
+#     """
+#     try:
+#         balance_data = fetch_bank_balance()  # your existing logic
+#         return Response(balance_data)
+#     except Exception as e:
+#         return Response({'error': str(e)}, status=500)
