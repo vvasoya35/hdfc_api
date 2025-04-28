@@ -6,8 +6,9 @@ from rest_framework import status
 from .serializers import PaymentRequestSerializer, FundTransferRequestSerializer, GetBalanceRequestSerializer
 from .models import Beneficiary, FundTransferTransaction,TransactionConfig
 from .services import transaction_process_imps,get_transaction_status, get_auth_tokens, DynamicIVJce
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes 
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAdminUser
 from django.utils import timezone
 import uuid
 from .permissions import IsAuthorizedIP
@@ -114,11 +115,17 @@ class TransactionStatusAPIView(APIView):
         except FundTransferTransaction.DoesNotExist:
             return Response({"error": "Transaction not found."}, status=status.HTTP_404_NOT_FOUND)
 
-
+@api_view(['GET'])
+@permission_classes([IsAdminUser, IsAuthorizedIP])
 def Get_balance_view(request):
-    balance = fetch_bank_balance()
-    return JsonResponse(balance, safe=False)
-
+    """
+    Only Admin + Authorized IP can access this
+    """
+    try:
+        balance_data = fetch_bank_balance()  # your existing logic
+        return Response(balance_data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 
 # def Get_balance_view(request):
 #     get_balsnce_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"
