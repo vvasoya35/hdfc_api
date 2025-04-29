@@ -79,12 +79,12 @@ WSGI_APPLICATION = 'transaction.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'kachipuka_textile_IDFC',
-        'USER': 'doadmin',
-        'PASSWORD': 'AVNS_yQN8_r0KgyKYC86lqFB',
-        'HOST': 'tirthcreation-do-user-20159209-0.k.db.ondigitalocean.com',
-        'PORT': '25060'
-    }
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT')    
+        }
 }
 
 
