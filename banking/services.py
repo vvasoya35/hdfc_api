@@ -87,7 +87,7 @@ def transaction_process_imps(transaction):
             headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/x-www-form-urlencoded",
-            "source": "KAC",
+            "source": config.source,
             "correlationId" : "523134453sadaazd",
             "Content-Type":"application/octet-stream"
             }
@@ -152,7 +152,7 @@ def get_transaction_status(transaction):
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/x-www-form-urlencoded",
-            "source": "KAC",
+            "source": config.source,
             "correlationId" : "523134453sadaazd",
             "Content-Type":"application/octet-stream"
         }
@@ -221,7 +221,7 @@ def fetch_bank_balance():
     if access_token:
         headers = {
             "Authorization": f"Bearer {access_token}",
-            "source": "KAC",
+            "source": config.source,
             "correlationId": "523134453sadaazd",
             "Content-Type": "application/octet-stream"
         }

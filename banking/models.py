@@ -84,6 +84,7 @@ class Users_ips(models.Model):
         return f"{self.ip_address}"
 
 class TransactionConfig(models.Model):
+    compnay_name = models.CharField(max_length=100)
     debit_account_number = models.CharField(max_length=20)
     remitter_name = models.CharField(max_length=100)
     client_id = models.CharField(max_length=100)
@@ -93,6 +94,7 @@ class TransactionConfig(models.Model):
     sub = models.CharField(max_length=100)
     iss = models.CharField(max_length=100)
     aud = models.URLField()
+    source = models.CharField(max_length=10)  # key cert algorithm
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

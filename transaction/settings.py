@@ -23,11 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-h9rh6l_@27t&ai4-x4u6(7g)t%h!p0-z(u%%sxn3dwjh)@d7*-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['connect.kachipukatextile.com','kachipukatextile.com','64.227.145.53']
 
-# Application definition
+CSRF_TRUSTED_ORIGINS = [
+    "https://connect.kachipukatextile.com",
+    "https://www.kachipukatextile.com"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -75,8 +78,12 @@ WSGI_APPLICATION = 'transaction.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'kachipuka_textile_IDFC',
+        'USER': 'doadmin',
+        'PASSWORD': 'AVNS_yQN8_r0KgyKYC86lqFB',
+        'HOST': 'tirthcreation-do-user-20159209-0.k.db.ondigitalocean.com',
+        'PORT': '25060'
     }
 }
 
