@@ -94,9 +94,12 @@ class TransactionConfig(models.Model):
     sub = models.CharField(max_length=100)
     iss = models.CharField(max_length=100)
     aud = models.URLField()
+    auth_url = models.URLField(default='')
+    fund_transfer_url = models.URLField(default='')
+    transaction_status_url = models.URLField(default='')
     source = models.CharField(max_length=10)  # key cert algorithm
+    get_balance_url = models.URLField(default='')
     created_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return f"Transaction Config"
         
