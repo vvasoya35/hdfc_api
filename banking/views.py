@@ -43,7 +43,7 @@ class FundTransferAPIView(APIView):
 
 
         try:
-            serializer = FundTransferRequestSerializer(data=data)
+            serializer = FundTransferRequestSerializer(data=request.data)
         except Exception as e:
             import traceback; traceback.print_exc();
             pdb.set_trace()
