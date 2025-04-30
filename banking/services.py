@@ -220,6 +220,7 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
             "prompt": promt
         }
     }
+    pdb.set_trace()
     data = json.dumps(get_payload) 
 
     access_token = get_auth_tokens()
@@ -231,7 +232,6 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
             "correlationId" : "523134453sad-9aazd88",
             "Content-Type":"application/octet-stream"
             }
-        pdb.set_trace()
         encrypted = DynamicIVJce.encrypt(data, secret_hex_key) 
         if encrypted:
             encrypted_payload = encrypted
