@@ -36,8 +36,9 @@ ALLOWED_HOSTS = ['connect.kachipukatextile.com','kachipukatextile.com','64.227.1
 
 CSRF_TRUSTED_ORIGINS = [
     "https://connect.kachipukatextile.com",
-    "https://www.kachipukatextile.com"
-    "http://127.0.0.1:8000"
+    "https://www.kachipukatextile.com",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1",
 ]
 
 INSTALLED_APPS = [
