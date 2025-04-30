@@ -114,7 +114,7 @@ def transaction_process_imps(transaction):
                 transaction.http_status_code = fund_t_response.status_code
                 transaction.txn_updated_timestamp = timezone.now()
                 transaction.txn_received_timestamp = result['initiateAuthGenericFundTransferAPIResp']['metaData']['time']
-                transaction.message_type = result['initiateAuthGenericFundTransferAPIResp']['metaData']['message']
+                transaction.payment_description = result['initiateAuthGenericFundTransferAPIResp']['metaData']['message']
                 if result['initiateAuthGenericFundTransferAPIResp']['metaData']['status'] == "ERROR":
                     transaction.txn_status = result['initiateAuthGenericFundTransferAPIResp']['metaData']['status']
                 else:
@@ -186,7 +186,7 @@ def get_transaction_status(transaction):
                     transaction.http_status_code = fund_t_response.status_code
                     transaction.txn_updated_timestamp = timezone.now()
                     transaction.txn_received_timestamp = result['paymentTransactionStatusResp']['metaData']['time']
-                    transaction.message_type = result['paymentTransactionStatusResp']['metaData']['message']
+                    transaction.payment_description = result['paymentTransactionStatusResp']['metaData']['message']
                     if result['paymentTransactionStatusResp']['metaData']['status'] == "ERROR":
                         transaction.txn_status = result['paymentTransactionStatusResp']['metaData']['status']
                     else:
@@ -488,7 +488,7 @@ def fetch_bank_balance():
 #             transaction.http_status_code = fund_t_response.status_code
 #             transaction.txn_updated_timestamp = timezone.now()
 #             transaction.txn_received_timestamp = result['initiateAuthGenericFundTransferAPIResp']['metaData']['time']
-#             transaction.message_type = result['initiateAuthGenericFundTransferAPIResp']['metaData']['message']
+#             transaction.payment_description = result['initiateAuthGenericFundTransferAPIResp']['metaData']['message']
             
 #             if result['initiateAuthGenericFundTransferAPIResp']['metaData']['status'] == "ERROR":
 #                 transaction.txn_status = result['initiateAuthGenericFundTransferAPIResp']['metaData']['status']

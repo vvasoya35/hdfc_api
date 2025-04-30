@@ -43,7 +43,7 @@ class FundTransferTransaction(models.Model):
     payment_description = models.CharField(max_length=120, blank=True, null=True)
     message_type = models.CharField(max_length=10, blank=True, null=True)
 
-    txn_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="INITIATED")
+    txn_status = models.CharField(max_length=100, choices=STATUS_CHOICES, default="INITIATED")
     txn_received_timestamp = models.DateTimeField(blank=True, null=True)
     txn_updated_timestamp = models.DateTimeField(blank=True, null=True)
 
