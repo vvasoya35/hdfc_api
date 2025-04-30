@@ -11,7 +11,6 @@ class CustomAdminSite(AdminSite):
     site_title = 'Kachubuka Textile Admin'  # This changes the title in the browser tab
     index_title = 'Welcome to Kachubuka Textile Admin'  # This changes the title on the main admin page
 
-# Register the custom admin site
 custom_admin_site = CustomAdminSite(name='custom_admin')
 
 
