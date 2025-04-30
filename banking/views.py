@@ -111,6 +111,7 @@ class TransactionStatusAPIView(APIView):
     def post(self, request, *args, **kwargs):
         transaction_id = request.data.get('transactionReferenceNumber')
         if not transaction_id:
+            
             return Response({"error": "Transaction ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:

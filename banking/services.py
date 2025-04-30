@@ -151,7 +151,6 @@ def get_transaction_status(transaction):
                     "transactionDate":transactionDate
                 }
         }
-    
     access_token = get_auth_tokens()
     if access_token:
         headers = {
