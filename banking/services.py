@@ -206,7 +206,7 @@ def get_transaction_status(transaction):
 def get_statement(start_date,end_date,numberOfTransactions,promt):
     # statement_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/accountStatement"
     config = TransactionConfig.objects.first()
-    statement_url = config.statement_url
+    statement_url = "https://apiext.liab.idfcfirstbank.com/acctenq/v3/getAccountStatement"
     account_number = config.debit_account_number
     secret_hex_key = config.secret_hex_key.replace('\\n', '\n')
     get_payload = {
