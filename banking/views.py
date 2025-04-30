@@ -26,8 +26,13 @@ class FundTransferAPIView(APIView):
     """
     permission_classes = [IsAuthorizedIP]
     def post(self, request, *args, **kwargs):
-        pdb.set_trace()
-        serializer = FundTransferRequestSerializer(data=request.data)
+        # pdb.set_trace()
+        try:
+            serializer = FundTransferRequestSerializer(data=request.data)
+        except Exception as e:
+            import traceback; traceback.print_exc();
+            pdb.set_trace()
+
         if serializer.is_valid():
             try:
                 config = TransactionConfig.objects.first()
