@@ -97,9 +97,9 @@ class TransactionConfig(models.Model):
     auth_url = models.URLField(default='')
     fund_transfer_url = models.URLField(default='')
     transaction_status_url = models.URLField(default='')
-    statement_url = models.URLField(default='')
+    statement_url = models.URLField(default='',null=True, blank=True)
     source = models.CharField(max_length=10) 
-    get_balance_url = models.URLField(default='',null=True, blank=True)
+    get_balance_url = models.URLField(default='')
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Transaction Config"
