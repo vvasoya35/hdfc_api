@@ -41,8 +41,8 @@ def get_auth_tokens():
         "client_assertion":token
     }
 
-    auth_url = "https://apiext.uat.idfcfirstbank.com/authorization/oauth2/token?"
-
+    # auth_url = "https://apiext.uat.idfcfirstbank.com/authorization/oauth2/token?"
+    auth_url = config.auth_url
     auth_res = requests.post(auth_url, data=authorized_payload)
     if auth_res.status_code == 200:
         access_token = auth_res.json()['access_token']
@@ -93,8 +93,8 @@ def transaction_process_imps(transaction):
             }
             encrypted_payload =  encrypted
 
-            fund_transfer_url = "https://apiext.uat.idfcfirstbank.com/paymenttxns/v1/fundTransfer"
-
+            # fund_transfer_url = "https://apiext.uat.idfcfirstbank.com/paymenttxns/v1/fundTransfer"
+            fund_transfer_url = config.fund_transfer_url
             fund_t_response = requests.post(fund_transfer_url, headers=headers, data=encrypted_payload.encode("utf-8"))
 
             encrypted_payload = fund_t_response.text
@@ -130,7 +130,8 @@ def transaction_process_imps(transaction):
 
 
 def get_transaction_status(transaction):
-    transaction_status = "https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus"
+    # transaction_status = "https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus"
+    transaction_status = transaction.transaction_status_url
     transactionDate = transaction.created_at.strftime("%d%m%Y")
     transactionReferenceNumber = transaction.transaction_reference_no
     config = TransactionConfig.objects.first()
@@ -202,8 +203,9 @@ def get_transaction_status(transaction):
 
 
 def fetch_bank_balance():
-    get_balance_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"
+    # get_balance_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"
     config = TransactionConfig.objects.first()
+    get_balance_url = config.get_balance_url
 
     get_payload = {
         "prefetchAccountReq": {
