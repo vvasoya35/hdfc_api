@@ -18,8 +18,8 @@ class IsAuthorizedIP(BasePermission):
         else:
             request_ip = request.META.get('REMOTE_ADDR')
 
-        # print("allowed_ips ", allowed_ips)
-        # print("request_ip ", request_ip)
+        print("allowed_ips ", allowed_ips)
+        print("request_ip ", request_ip)
         return request_ip in allowed_ips  #
 
 def is_authorized_ip(request):
@@ -38,8 +38,8 @@ def is_authorized_ip(request):
     else:
         request_ip = request.META.get('REMOTE_ADDR')
 
-    # print("allowed_ips ", allowed_ips)
-    # print("request_ip ", request_ip)
+    print("allowed_ips ", allowed_ips)
+    print("request_ip ", request_ip)
     return request_ip in allowed_ips 
 class IsSuperUser(BasePermission):
     """
