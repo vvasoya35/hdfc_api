@@ -26,7 +26,7 @@ class FundTransferRequestSerializer(serializers.Serializer):
     beneficiary = BeneficiarySerializer()
     amount = serializers.DecimalField(max_digits=12, decimal_places=2)
     payment_description = serializers.CharField(required=False, allow_blank=True)
-    transaction_type = serializers.ChoiceField(choices=[('IMPS', 'IMPS'), ('NEFT', 'NEFT'), ('RTGS', 'RTGS')], default='IMPS', required=False)
+    # transaction_type = serializers.ChoiceField(choices=[('IMPS', 'IMPS'), ('NEFT', 'NEFT'), ('RTGS', 'RTGS')], default='IMPS', required=False)
 
 class GetBalanceRequestSerializer(serializers.Serializer):
     transactionReferenceNumber = serializers.CharField(required=True)
