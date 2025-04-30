@@ -81,7 +81,6 @@ def transaction_process_imps(transaction):
 
     data = json.dumps(t_payload)  
     secret_hex_key = config.secret_hex_key
-    pdb.set_trace()
 
     encrypted = DynamicIVJce.encrypt(data, secret_hex_key)  
     if encrypted:
