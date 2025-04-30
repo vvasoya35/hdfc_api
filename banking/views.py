@@ -26,6 +26,7 @@ class FundTransferAPIView(APIView):
     """
     permission_classes = [IsAuthorizedIP]
     def post(self, request, *args, **kwargs):
+        pdb.set_trace()
         serializer = FundTransferRequestSerializer(data=request.data)
         if serializer.is_valid():
             try:
