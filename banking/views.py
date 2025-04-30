@@ -27,6 +27,9 @@ class FundTransferAPIView(APIView):
     permission_classes = [IsAuthorizedIP]
     def post(self, request, *args, **kwargs):
         # pdb.set_trace()
+        import sys
+        print("RAW BODY:", request.body.decode('utf-8', errors='replace'), file=sys.stderr)
+
         try:
             serializer = FundTransferRequestSerializer(data=request.data)
         except Exception as e:
