@@ -32,6 +32,9 @@ class FundTransferAPIView(APIView):
         raw_body = request.body.decode('utf-8', errors='replace')
         print("RAW BODY:", raw_body, file=sys.stderr)
         clean_body = raw_body.replace('\xa0', ' ').strip()
+        print("Content-Type:", request.content_type)
+        print("Request Body:", request.body.decode('utf-8', errors='replace'))
+        print("Request Data:", request.data)
 
         try:
             data = json.loads(clean_body)
