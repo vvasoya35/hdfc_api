@@ -3,9 +3,9 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import PaymentRequestSerializer, FundTransferRequestSerializer, GetBalanceRequestSerializer
+from .serializers import PaymentRequestSerializer, FundTransferRequestSerializer, GetBalanceRequestSerializer, GetBankStatementRequestSerializer
 from .models import Beneficiary, FundTransferTransaction,TransactionConfig
-from .services import transaction_process_imps,get_transaction_status, get_auth_tokens, DynamicIVJce
+from .services import get_statement, transaction_process_imps,get_transaction_status, get_auth_tokens, DynamicIVJce
 from rest_framework.decorators import api_view,permission_classes 
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAdminUser
@@ -101,7 +101,6 @@ class FundTransferAPIView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-import pdb
 class TransactionStatusAPIView(APIView):
     """
     Transaction Status API
@@ -111,7 +110,7 @@ class TransactionStatusAPIView(APIView):
     def post(self, request, *args, **kwargs):
         transaction_id = request.data.get('transactionReferenceNumber')
         if not transaction_id:
-            
+
             return Response({"error": "Transaction ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -136,6 +135,28 @@ class TransactionStatusAPIView(APIView):
 
         except FundTransferTransaction.DoesNotExist:
             return Response({"error": "Transaction not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class SatatementAPIView(APIView):
+    """
+    Bank Statement API
+    """
+    permission_classes = [IsAuthorizedIP]
+
+    def post(self, request, *args, **kwargs):
+        # Implement your logic here
+        serializer = GetBankStatementRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            # Process the request data
+            # For example, you can fetch the bank statement based on the provided parameters
+            start_date = serializer.validated_data.get('start_date')
+            end_date = serializer.validated_data.get('end_date')
+            numberOfTransactions = serializer.validated_data.get('numberOfTransactions')
+            promt = serializer.validated_data.get('prompt', "")
+            
+            # Call the function to get the bank statement
+            bank_statement = get_statement(start_date, end_date, numberOfTransactions, promt)
+            return Response(bank_statement, status=status.HTTP_200_OK)
+        return Response({"message": "Bank Statement API"}) 
 
 @csrf_exempt
 def Get_balance_view(request):

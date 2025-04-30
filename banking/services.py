@@ -203,7 +203,60 @@ def get_transaction_status(transaction):
         print("Failed to get access token.")
         return {"error": "Failed to get access token."}
 
+def get_statement(start_date,end_date,numberOfTransactions,promt):
+    # statement_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/accountStatement"
+    config = TransactionConfig.objects.first()
+    statement_url = config.statement_url
+    account_number = config.debit_account_number
+    secret_hex_key = config.secret_hex_key.replace('\\n', '\n')
+    get_payload = {
+        "getAccountStatementReq": {
+            "CBSTellerBranch": "",
+            "CBSTellerID": "",
+            "accountNumber": account_number,
+            "fromDate": start_date,
+            "toDate": end_date,
+            "numberOfTransactions": numberOfTransactions,
+            "prompt": promt
+        }
+    }
+    data = json.dumps(get_payload) 
 
+    access_token = get_auth_tokens()
+    if access_token:
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "source": config.source,
+            "correlationId" : "523134453sad-9aazd88",
+            "Content-Type":"application/octet-stream"
+            }
+
+        encrypted = DynamicIVJce.encrypt(data, secret_hex_key) 
+        if encrypted:
+            encrypted_payload = encrypted
+            fund_t_response = requests.post(statement_url, headers=headers, data=encrypted_payload.encode("utf-8"))
+
+            encrypted_payload = fund_t_response.text            
+
+            decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
+
+            if decrypted:
+                    print("Decrypted Payload:")
+                    # print(decrypted)
+
+                    result = json.loads(decrypted)
+                    return result
+            else:
+                    print("Decryption failed.")
+                    return {"error": "Decryption failed."}
+            
+        else:
+            print("Encryption failed.")
+            return {"error": "Encryption failed."}
+    else:
+        print("Failed to get access token.")
+        return {"error": "Failed to get access token."}
 
 def fetch_bank_balance():
     # get_balance_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"

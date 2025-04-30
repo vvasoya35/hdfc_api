@@ -30,3 +30,9 @@ class FundTransferRequestSerializer(serializers.Serializer):
 
 class GetBalanceRequestSerializer(serializers.Serializer):
     transactionReferenceNumber = serializers.CharField(required=True)
+
+class GetBankStatementRequestSerializer(serializers.Serializer):
+    "fromDate" = serializers.DateField(format="%d/%m/%Y", input_formats=["%d/%m/%Y"])
+    "toDate" = serializers.DateField(format="%d/%m/%Y", input_formats=["%d/%m/%Y"])
+    "numberOfTransactions" = serializers.IntegerField()
+    "prompt" = serializers.CharField(required=False, allow_blank=True, allow_null=True)
