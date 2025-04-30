@@ -99,6 +99,7 @@ class TransactionConfig(models.Model):
     transaction_status_url = models.URLField(default='')
     source = models.CharField(max_length=10) 
     get_balance_url = models.URLField(default='')
+    statement_url = models.URLField(default='')
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Transaction Config"
