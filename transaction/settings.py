@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-h9rh6l_@27t&ai4-x4u6(7g)t%h!p0-z(u%%sxn3dwjh)@d7*-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['connect.kachipukatextile.com','kachipukatextile.com','64.227.145.53','*']
+ALLOWED_HOSTS = ['connect.kachipukatextile.com','kachipukatextile.com','64.227.145.53']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://connect.kachipukatextile.com",
