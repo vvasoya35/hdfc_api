@@ -29,9 +29,17 @@ class FundTransferAPIView(APIView):
         # pdb.set_trace()
         import sys
         print("RAW BODY:", request.body.decode('utf-8', errors='replace'), file=sys.stderr)
+        raw_body = request.body.decode('utf-8', errors='replace')
+        print("RAW BODY:", raw_body, file=sys.stderr)
 
         try:
-            serializer = FundTransferRequestSerializer(data=request.data)
+            data = json.loads(raw_body)
+        except json.JSONDecodeError as e:
+            return Response({"error": f"Invalid JSON: {str(e)}"}, status=400)
+
+
+        try:
+            serializer = FundTransferRequestSerializer(data=data)
         except Exception as e:
             import traceback; traceback.print_exc();
             pdb.set_trace()
