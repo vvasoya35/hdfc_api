@@ -47,7 +47,6 @@ class FundTransferAPIView(APIView):
         except Exception as e:
             import traceback; traceback.print_exc();
 
-        pdb.set_trace()
         if serializer.is_valid():
             try:
                 config = TransactionConfig.objects.first()
