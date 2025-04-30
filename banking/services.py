@@ -203,12 +203,12 @@ def get_transaction_status(transaction):
         print("Failed to get access token.")
         return {"error": "Failed to get access token."}
 
-def get_statement(start_date,end_date,numberOfTransactions,promt):
+def get_statement(start_date, end_date, numberOfTransactions, promt):
     # statement_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/accountStatement"
     config = TransactionConfig.objects.first()
     statement_url = config.statement_url
     account_number = config.debit_account_number
-    secret_hex_key = config.secret_hex_key.replace('\\n', '\n')
+    secret_hex_key = config.secret_hex_key
     get_payload = {
         "getAccountStatementReq": {
             "CBSTellerBranch": "",
