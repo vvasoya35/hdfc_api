@@ -4,6 +4,16 @@ from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
 from .services import fetch_bank_balance
+from django.contrib.admin import AdminSite
+
+class CustomAdminSite(AdminSite):
+    site_header = 'Kachubuka Textile'  # This will change the site name at the top
+    site_title = 'Kachubuka Textile Admin'  # This changes the title in the browser tab
+    index_title = 'Welcome to Kachubuka Textile Admin'  # This changes the title on the main admin page
+
+# Register the custom admin site
+custom_admin_site = CustomAdminSite(name='custom_admin')
+
 
 class TransactionConfigAdmin(admin.ModelAdmin):
     change_list_template = "admin/transaction_config_change_list.html"  # custom template
