@@ -26,15 +26,15 @@ class FundTransferAPIView(APIView):
     """
     permission_classes = [IsAuthorizedIP]
     def post(self, request, *args, **kwargs):
-        # pdb.set_trace()
+
         import sys
-        print("RAW BODY:", request.body.decode('utf-8', errors='replace'), file=sys.stderr)
+        # print("RAW BODY:", request.body.decode('utf-8', errors='replace'), file=sys.stderr)
         raw_body = request.body.decode('utf-8', errors='replace')
-        print("RAW BODY:", raw_body, file=sys.stderr)
+        # print("RAW BODY:", raw_body, file=sys.stderr)
         clean_body = raw_body.replace('\xa0', ' ').strip()
-        print("Content-Type:", request.content_type)
-        print("Request Body:", request.body.decode('utf-8', errors='replace'))
-        print("Request Data:", request.data)
+        # print("Content-Type:", request.content_type)
+        # print("Request Body:", request.body.decode('utf-8', errors='replace'))
+        # print("Request Data:", request.data)
 
         try:
             data = json.loads(clean_body)
@@ -89,7 +89,7 @@ class FundTransferAPIView(APIView):
                 # Process fund transfer
                 # service_response = process_fund_transfer(transaction, config)
                 service_response = transaction_process_imps(transaction)
-                pdb.set_trace()
+
                 if service_response.get("error"):
                     return Response(service_response, status=500)
                 return Response(service_response, status=200)
@@ -116,13 +116,13 @@ class TransactionStatusAPIView(APIView):
         try:
             transaction = FundTransferTransaction.objects.get(transaction_reference_no=transaction_id)
             transaction_status = transaction.txn_status
-                # pdb.set_trace()
+
             if transaction_status == "INITIATED":
                 service_response = get_transaction_status(transaction)
                 return Response(service_response, status=status.HTTP_200_OK)
             else:
                 response_data = transaction.response_data
-                # pdb.set_trace()
+
                 if response_data:
                     try:
                         response_data = json.loads(response_data)

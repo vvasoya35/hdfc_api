@@ -44,7 +44,7 @@ def get_auth_tokens():
         "client_assertion_type":"urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
         "client_assertion":token
     }
-    # pdb.set_trace()
+
     auth_url = "https://apiext.idfcfirstbank.com/authorization/oauth2/token"
     # auth_url = config.auth_url
     auth_res = requests.post(auth_url, data=authorized_payload, timeout=10, verify=False)
@@ -102,7 +102,7 @@ def transaction_process_imps(transaction):
             fund_t_response = requests.post(fund_transfer_url, headers=headers, data=encrypted_payload.encode("utf-8"))
 
             encrypted_payload = fund_t_response.text
-            # pdb.set_trace()
+
             decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
             if decrypted:
                 print("Decrypted Payload:")
