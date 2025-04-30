@@ -25,9 +25,12 @@ def get_auth_tokens():
     # JWT payload (you can add more custom fields)
     payload = {
     "jti":generate_unique_jti(),
-    "sub":sub,
-    "iss":iss,
-    "aud":aud, 
+    # "sub":sub,
+    # "iss":iss,
+    # "aud":aud, 
+    "sub":"13a738f6-f2f6-4ca9-8d5c-40d67056da5e",
+    "iss":"13a738f6-f2f6-4ca9-8d5c-40d67056da5e",
+    "aud":"https://app.my.idfcfirstbank.com/platform/oauth/oauth2/token", 
     "exp":get_future_unix_time_ist()
     }
 
@@ -36,13 +39,14 @@ def get_auth_tokens():
     authorized_payload = {
         "grant_type":"client_credentials",
         "scope":"paymenttxn-v1fundTransfer paymentenq-paymentTransactionStatus cbs-acctenq-accountBalance cbs-acctenq-accountStatement",
-        "client_id":client_id,
+        # "client_id":client_id,
+        "client_id":"13a738f6-f2f6-4ca9-8d5c-40d67056da5e",
         "client_assertion_type":"urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
         "client_assertion":token
     }
-    # pdb.set_trace()
-    # auth_url = "https://apiext.uat.idfcfirstbank.com/authorization/oauth2/token?"
-    auth_url = config.auth_url
+    pdb.set_trace()
+    auth_url = "https://apiext.idfcfirstbank.com/authorization/oauth2/token"
+    # auth_url = config.auth_url
     auth_res = requests.post(auth_url, data=authorized_payload)
     if auth_res.status_code == 200:
         access_token = auth_res.json()['access_token']
