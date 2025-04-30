@@ -35,7 +35,7 @@ class FundTransferAPIView(APIView):
         try:
             data = json.loads(raw_body)
         except json.JSONDecodeError as e:
-            return Response({"error": f"Invalid JSON: {str(e)}"}, status=400)
+            print({"error": f"Invalid JSON: {str(e)}"}, status=400)
 
 
         try:
