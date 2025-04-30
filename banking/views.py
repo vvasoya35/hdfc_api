@@ -148,8 +148,8 @@ class SatatementAPIView(APIView):
         if serializer.is_valid():
             # Process the request data
             # For example, you can fetch the bank statement based on the provided parameters
-            start_date = serializer.validated_data.get('start_date')
-            end_date = serializer.validated_data.get('end_date')
+            start_date = serializer.validated_data.get('fromDate')
+            end_date = serializer.validated_data.get('toDate')
             numberOfTransactions = serializer.validated_data.get('numberOfTransactions')
             promt = serializer.validated_data.get('prompt', "")
             

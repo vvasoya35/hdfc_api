@@ -231,7 +231,7 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
             "correlationId" : "523134453sad-9aazd88",
             "Content-Type":"application/octet-stream"
             }
-        pdb.set_trace()
+
         encrypted = DynamicIVJce.encrypt(data, secret_hex_key) 
         if encrypted:
             encrypted_payload = encrypted
