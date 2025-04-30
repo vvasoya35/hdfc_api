@@ -47,7 +47,7 @@ def get_auth_tokens():
     pdb.set_trace()
     auth_url = "https://apiext.idfcfirstbank.com/authorization/oauth2/token"
     # auth_url = config.auth_url
-    auth_res = requests.post(auth_url, data=authorized_payload)
+    auth_res = requests.post(auth_url, data=authorized_payload, timeout=10, verify=False)
     if auth_res.status_code == 200:
         access_token = auth_res.json()['access_token']
         return access_token
