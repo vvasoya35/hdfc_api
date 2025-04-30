@@ -31,9 +31,10 @@ class FundTransferAPIView(APIView):
         print("RAW BODY:", request.body.decode('utf-8', errors='replace'), file=sys.stderr)
         raw_body = request.body.decode('utf-8', errors='replace')
         print("RAW BODY:", raw_body, file=sys.stderr)
+        clean_body = raw_body.replace('\xa0', ' ').strip()
 
         try:
-            data = json.loads(raw_body)
+            data = json.loads(clean_body)
         except json.JSONDecodeError as e:
             print({"error": f"Invalid JSON: {str(e)}"})
 
