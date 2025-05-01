@@ -24,13 +24,13 @@ class FundTransferTransaction(models.Model):
         ("IFT", "IFT"),
     ]
 
-    SATUS_CHOICES = [
-        ("SUCCESS", "Success"),
+    STATUS_CHOICES = [
         ("INITIATED", "Initiated"),
+        ("SUCCESS", "Success"),
         ("ACPT", "Accepted"),
         ("REJECTED", "Rejected"),
         ("FAILED", "Failed"),
-        ("ERTROR", "Error"),
+        ("ERROR", "Error"),
     ]
 
     beneficiary = models.ForeignKey("Beneficiary", on_delete=models.PROTECT)
