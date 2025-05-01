@@ -216,7 +216,7 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
             "accountNumber": account_number,
             "fromDate": start_date,
             "toDate": end_date,
-            "numberOfTransactions": numberOfTransactions,
+            "numberOfTransactions": f"{numberOfTransactions}",
             "prompt": promt
         }
     }
@@ -279,10 +279,11 @@ def fetch_bank_balance():
     if access_token:
         headers = {
             "Authorization": f"Bearer {access_token}",
-            "source": config.source,
-            "correlationId": "523134453sadaazd",
-            "Content-Type": "application/octet-stream"
-        }
+            "Content-Type": "application/x-www-form-urlencoded",
+            "source": "KAC",
+            "correlationId" : "523134453sad-9aazd88",
+            "Content-Type":"application/octet-stream"
+            }
         fund_t_response = requests.post(get_balance_url, headers=headers, data=encrypted.encode("utf-8"))
 
         encrypted_payload = fund_t_response.text
