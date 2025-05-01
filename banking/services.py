@@ -188,7 +188,7 @@ def get_transaction_status(transaction):
                     if result['paymentTransactionStatusResp']['metaData']['status'] == "ERROR":
                         transaction.txn_status = result['paymentTransactionStatusResp']['metaData']['status']
                     else:
-                        transaction.txn_status = result['paymentTransactionStatusResp']['resourceData']['status']
+                        transaction.txn_status = result['paymentTransactionStatusResp']['metaData']['status']
                         transaction.transaction_reference_no = result['paymentTransactionStatusResp']['resourceData']['transactionReferenceNumber']
                     transaction.save()
                     return result
