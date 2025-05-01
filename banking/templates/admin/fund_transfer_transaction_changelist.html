@@ -2,10 +2,20 @@
 
 {% block content_title %}
   <h2>Fund Transfer Transactions</h2>
+
   <div style="margin-bottom: 20px; padding: 10px; background: #e6f7ff; border-left: 5px solid #1890ff;">
-    <strong>📊 Today's Accepted Transactions:</strong><br>
+    <strong>📊 Transaction Summary for the selected range:</strong><br>
     ✅ Total Amount: ₹{{ today_total_amount }}<br>
     ✅ Total Count: {{ today_total_count }} transactions
   </div>
+
+  <form method="get" action="" style="margin-bottom: 20px;">
+    <label for="start_date">Start Date:</label>
+    <input type="date" name="start_date" id="start_date" value="{{ request.GET.start_date }}" />
+    <label for="end_date">End Date:</label>
+    <input type="date" name="end_date" id="end_date" value="{{ request.GET.end_date }}" />
+    <button type="submit">Filter</button>
+  </form>
+
   {{ block.super }}
 {% endblock %}
