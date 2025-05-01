@@ -60,7 +60,7 @@ class FundTransferTransactionAdmin(admin.ModelAdmin):
 
         queryset = FundTransferTransaction.objects.filter(
             created_at__date=today,
-            txn_status__in=["ACPT", "Accepted"]
+            txn_status__in=["ACPT"]
         )
 
         total_amount = queryset.aggregate(Sum('amount'))['amount__sum'] or 0
