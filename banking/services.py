@@ -117,7 +117,7 @@ def transaction_process_imps(transaction):
                 if result['initiateAuthGenericFundTransferAPIResp']['metaData']['status'] == "ERROR":
                     transaction.txn_status = result['initiateAuthGenericFundTransferAPIResp']['metaData']['status']
                 else:
-                    transaction.txn_status = result['initiateAuthGenericFundTransferAPIResp']['resourceData']['status']
+                    transaction.txn_status = result['initiateAuthGenericFundTransferAPIResp']['metaData']['status']
                     transaction.transaction_reference_no = result['initiateAuthGenericFundTransferAPIResp']['resourceData']['transactionReferenceNo']
                 transaction.save()
                 return result
