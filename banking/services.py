@@ -45,8 +45,8 @@ def get_auth_tokens():
         "client_assertion":token
     }
 
-    auth_url = "https://apiext.idfcfirstbank.com/authorization/oauth2/token"
-    # auth_url = config.auth_url
+    # auth_url = "https://apiext.idfcfirstbank.com/authorization/oauth2/token"
+    auth_url = config.auth_url
     auth_res = requests.post(auth_url, data=authorized_payload, timeout=10, verify=False)
     if auth_res.status_code == 200:
         access_token = auth_res.json()['access_token']
@@ -220,7 +220,7 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
             "prompt": promt
         }
     }
-    # pdb.set_trace()
+
     data = json.dumps(get_payload) 
 
     access_token = get_auth_tokens()
