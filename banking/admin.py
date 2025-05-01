@@ -5,6 +5,7 @@ from django.urls import path
 from django.http import JsonResponse
 from .services import fetch_bank_balance
 from django.contrib.admin import AdminSite
+from django.db.models import Sum, Count
 
 class CustomAdminSite(AdminSite):
     site_header = 'Kachubuka Textile'  # This will change the site name at the top
@@ -50,6 +51,43 @@ class FundTransferTransactionAdmin(admin.ModelAdmin):
     search_fields = ('transaction_id', 'transaction_reference_no', 'beneficiary__name', 'debit_account_number')
     ordering = ('-created_at',)
     readonly_fields = ('unique_id', 'created_at', 'updated_at')
+
+    change_list_template = "admin/fund_transfer_transaction_changelist.html"
+
+    def changelist_view(self, request, extra_context=None):
+        from datetime import date
+        today = date.today()
+
+        queryset = FundTransferTransaction.objects.filter(
+            created_at__date=today,
+            txn_status__in=["ACPT", "Accepted"]
+        )
+
+        total_amount = queryset.aggregate(Sum('amount'))['amount__sum'] or 0
+        total_count = queryset.aggregate(Count('id'))['id__count']
+
+        extra_context = extra_context or {}
+        extra_context['today_total_amount'] = total_amount
+        extra_context['today_total_count'] = total_count
+
+        return super().changelist_view(request, extra_context=extra_context)
+
+# class FundTransferTransactionAdmin(admin.ModelAdmin):
+#     list_display = (
+#         'id',
+#         'transaction_id',
+#         'transaction_reference_no',
+#         'beneficiary',
+#         'amount',
+#         'transaction_type',
+#         'txn_status',
+#         'created_at',
+#         'updated_at',
+#     )
+#     list_filter = ('transaction_type', 'txn_status', 'created_at')
+#     search_fields = ('transaction_id', 'transaction_reference_no', 'beneficiary__name', 'debit_account_number')
+#     ordering = ('-created_at',)
+#     readonly_fields = ('unique_id', 'created_at', 'updated_at')
 
 @admin.register(Beneficiary)
 class BeneficiaryAdmin(admin.ModelAdmin):
