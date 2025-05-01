@@ -35,8 +35,8 @@ DEBUG = False
 ALLOWED_HOSTS = ['connect.kachipukatextile.com','kachipukatextile.com','64.227.145.53','127.0.0.1','167.71.227.2']
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://connect.kachipukatextile.com",
-    "http://www.kachipukatextile.com",
+    "https://connect.kachipukatextile.com",
+    "https://www.kachipukatextile.com",
     "http://64.227.145.53:8000",
     "http://64.227.145.53",
     "http://167.71.227.2:8000",
