@@ -220,7 +220,7 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
             "prompt": promt
         }
     }
-    pdb.set_trace()
+    # pdb.set_trace()
     data = json.dumps(get_payload) 
 
     access_token = get_auth_tokens()
