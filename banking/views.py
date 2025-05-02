@@ -145,6 +145,7 @@ class TransactionStatusAPIView(APIView):
             #         return Response({"error": "No response data available."}, status=status.HTTP_404_NOT_FOUND)
 
         except FundTransferTransaction.DoesNotExist:
+            import traceback; traceback.print_exc();
             return Response({"error": "Transaction not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class SatatementAPIView(APIView):
