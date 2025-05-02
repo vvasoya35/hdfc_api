@@ -103,6 +103,17 @@ DATABASES = {
         }
 }
 
+# CELERY CONFIG
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Or use RabbitMQ
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+# Celery Beat Scheduler
+INSTALLED_APPS += ['django_celery_beat']
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+CELERY_TASK_TRACK_STARTED = True
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
