@@ -116,8 +116,11 @@ class TransactionStatusAPIView(APIView):
             return Response({"error": "transactionReferenceNumber is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            transaction = FundTransferTransaction.objects.get(transaction_reference_no=transaction_id)
-            transaction_status = transaction.txn_status
+            try:
+                transaction = FundTransferTransaction.objects.get(transaction_reference_no=transaction_id)
+            except FundTransferTransaction.DoesNotExist:
+                transaction = None
+                
             if transaction is None:
             # if transaction:
                 print("Transaction not found")
