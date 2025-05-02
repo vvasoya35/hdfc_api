@@ -120,10 +120,10 @@ class TransactionStatusAPIView(APIView):
                 transaction = FundTransferTransaction.objects.get(transaction_reference_no=transaction_id)
             except FundTransferTransaction.DoesNotExist:
                 transaction = None
-                
+
             if transaction is None:
             # if transaction:
-                print("Transaction not found")
+                # print("Transaction not found")
                 if not transaction_id or not transaction_type or not transactionDate:
                     return Response({"error": "transactionReferenceNumber, transactionType and transactionDate are required."}, status=status.HTTP_400_BAD_REQUEST)
                 
@@ -149,7 +149,7 @@ class TransactionStatusAPIView(APIView):
             #         return Response({"error": "No response data available."}, status=status.HTTP_404_NOT_FOUND)
 
         except FundTransferTransaction.DoesNotExist:
-            import traceback; traceback.print_exc();
+            # import traceback; traceback.print_exc();
             return Response({"error": "Transaction not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class SatatementAPIView(APIView):
