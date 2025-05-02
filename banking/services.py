@@ -205,7 +205,7 @@ def get_transaction_status(transaction):
 
 def get_transaction_status(transactionReferenceNumber,transaction_type, transactionDate):
     # transaction_status = "https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus"
-    transactionDate = transactionDate.strftime("%d%m%Y")
+    transactionDate = transactionDate #.strftime("%d%m%Y")
     config = TransactionConfig.objects.first()
     transaction_status = config.transaction_status_url
     secret_hex_key = config.secret_hex_key.replace('\\n', '\n')
