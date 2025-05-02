@@ -118,7 +118,8 @@ class TransactionStatusAPIView(APIView):
         try:
             transaction = FundTransferTransaction.objects.get(transaction_reference_no=transaction_id)
             transaction_status = transaction.txn_status
-            if transaction is None:
+            # if transaction is None:
+            if transaction:
                 if not transaction_id or not transaction_type or not transactionDate:
                     return Response({"error": "transactionReferenceNumber, transactionType and transactionDate are required."}, status=status.HTTP_400_BAD_REQUEST)
                 
