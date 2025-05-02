@@ -6,41 +6,7 @@ from django.http import JsonResponse
 from .services import fetch_bank_balance
 from django.contrib.admin import AdminSite
 from django.db.models import Sum, Count
-from django.contrib.admin import SimpleListFilter
-from django.utils.translation import gettext_lazy as _
-from django.utils.timezone import now, localtime
-from django.utils import timezone
-from datetime import timedelta
-
-# class DateRangeFilter(SimpleListFilter):
-#     title = _('Transaction Date Range')  # Filter title
-#     parameter_name = 'date_range'  # URL parameter name for filtering
-
-#     def lookups(self, request, model_admin):
-#         return (
-#             ('last_7_days', _('Last 7 days')),
-#             ('last_30_days', _('Last 30 days')),
-#             ('custom', _('Custom range')),
-#         )
-
-#     def queryset(self, request, queryset):
-#         from datetime import timedelta
-#         from django.utils.timezone import now
-
-#         # Get the current date
-#         today = now().date()
-
-#         if self.value() == 'last_7_days':
-#             start_date = today - timedelta(days=7)
-#             return queryset.filter(created_at__date__gte=start_date)
-#         elif self.value() == 'last_30_days':
-#             start_date = today - timedelta(days=30)
-#             return queryset.filter(created_at__date__gte=start_date)
-#         elif self.value() == 'custom':
-#             # For custom range, let the admin select start and end dates in the admin panel
-#             return queryset
-#         return queryset
-
+from datetime import date, timedelta
 
 class CustomAdminSite(AdminSite):
     site_header = 'Kachubuka Textile'  # This will change the site name at the top
@@ -87,41 +53,29 @@ class FundTransferTransactionAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
     readonly_fields = ('unique_id', 'created_at', 'updated_at')
 
+    change_list_template = "admin/fund_transfer_transaction_changelist.html"
+
     def changelist_view(self, request, extra_context=None):
-        response = super().changelist_view(request, extra_context)
+        today = date.today()
+        yesterday = today - timedelta(days=1)
 
-        try:
-            today = timezone.now().date()
-            yesterday = today - timedelta(days=1)
+        today_qs = FundTransferTransaction.objects.filter(
+            created_at__date=today,
+            txn_status__in=["SUCCESS"]
+        )
+        yesterday_qs = FundTransferTransaction.objects.filter(
+            created_at__date=yesterday,
+            txn_status__in=["SUCCESS"]
+        )
 
-            today_qs = FundTransferTransaction.objects.filter(
-                created_at__date=today,
-                txn_status__in=["Success"]
-            )
-            yesterday_qs = FundTransferTransaction.objects.filter(
-                created_at__date=yesterday,
-                txn_status__in=["Success"]
-            )
+        extra_context = extra_context or {}
+        extra_context['today_total_amount'] = today_qs.aggregate(Sum('amount'))['amount__sum'] or 0
+        extra_context['today_total_count'] = today_qs.aggregate(Count('id'))['id__count']
 
-            today_total_amount = today_qs.aggregate(Sum('amount'))['amount__sum'] or 0
-            today_total_count = today_qs.count()
+        extra_context['yesterday_total_amount'] = yesterday_qs.aggregate(Sum('amount'))['amount__sum'] or 0
+        extra_context['yesterday_total_count'] = yesterday_qs.aggregate(Count('id'))['id__count']
 
-            yesterday_total_amount = yesterday_qs.aggregate(Sum('amount'))['amount__sum'] or 0
-            yesterday_total_count = yesterday_qs.count()
-
-            response.context_data['summary'] = {
-                'today_amount': today_total_amount,
-                'today_count': today_total_count,
-                'yesterday_amount': yesterday_total_amount,
-                'yesterday_count': yesterday_total_count,
-            }
-
-        except Exception as e:
-            # Optional: Log or print the error
-            print(f"Error in changelist summary: {e}")
-
-        return response
-
+        return super().changelist_view(request, extra_context=extra_context)
 
 # class FundTransferTransactionAdmin(admin.ModelAdmin):
 #     list_display = (
