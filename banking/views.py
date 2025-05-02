@@ -128,20 +128,21 @@ class TransactionStatusAPIView(APIView):
 
 
             # if transaction_status == "INITIATED":
-            #     service_response = get_transaction_status(transaction)
-            #     return Response(service_response, status=status.HTTP_200_OK)
             else:
-                response_data = transaction.response_data
+                service_response = get_transaction_status(transaction)
+                return Response(service_response, status=status.HTTP_200_OK)
+            # else:
+            #     response_data = transaction.response_data
 
-                if response_data:
-                    try:
-                        response_data = json.loads(response_data)
-                    except:
-                        response_data = ast.literal_eval(response_data)
+            #     if response_data:
+            #         try:
+            #             response_data = json.loads(response_data)
+            #         except:
+            #             response_data = ast.literal_eval(response_data)
 
-                    return Response(response_data, status=status.HTTP_200_OK)
-                else:
-                    return Response({"error": "No response data available."}, status=status.HTTP_404_NOT_FOUND)
+            #         return Response(response_data, status=status.HTTP_200_OK)
+            #     else:
+            #         return Response({"error": "No response data available."}, status=status.HTTP_404_NOT_FOUND)
 
         except FundTransferTransaction.DoesNotExist:
             return Response({"error": "Transaction not found."}, status=status.HTTP_404_NOT_FOUND)
