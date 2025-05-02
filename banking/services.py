@@ -135,10 +135,10 @@ def transaction_process_imps(transaction):
 
 def get_transaction_status(transaction):
     # transaction_status = "https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus"
-    transaction_status = transaction.transaction_status_url
     transactionDate = transaction.created_at.strftime("%d%m%Y")
     transactionReferenceNumber = transaction.transaction_reference_no
     config = TransactionConfig.objects.first()
+    transaction_status = config.transaction_status_url
     secret_hex_key = config.secret_hex_key.replace('\\n', '\n')
     cs_paylod = {
         "paymentTransactionStatusReq":
@@ -191,6 +191,61 @@ def get_transaction_status(transaction):
                         transaction.txn_status = result['paymentTransactionStatusResp']['metaData']['status']
                         transaction.transaction_reference_no = result['paymentTransactionStatusResp']['resourceData']['transactionReferenceNumber']
                     transaction.save()
+                    return result
+            else:
+                    print("Decryption failed.")
+                    return {"error": "Decryption failed."}
+            
+        else:
+            print("Encryption failed.")
+            return {"error": "Encryption failed."}
+    else:
+        print("Failed to get access token.")
+        return {"error": "Failed to get access token."}
+
+def get_transaction_status(transactionReferenceNumber,transaction_type, transactionDate):
+    # transaction_status = "https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus"
+    transactionDate = transactionDate.strftime("%d%m%Y")
+    config = TransactionConfig.objects.first()
+    transaction_status = config.transaction_status_url
+    secret_hex_key = config.secret_hex_key.replace('\\n', '\n')
+    cs_paylod = {
+        "paymentTransactionStatusReq":
+                {
+                    "tellerBranch":"",
+                    "tellerID":"",
+                    "transactionType":transaction_type,
+                    "transactionReferenceNumber":transactionReferenceNumber,
+                    "paymentReferenceNumber":"",
+                    "transactionDate":transactionDate
+                }
+        }
+    access_token = get_auth_tokens()
+    if access_token:
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "source": config.source,
+            "correlationId" : "523134453sadaazd",
+            "Content-Type":"application/octet-stream"
+        }
+
+        data = json.dumps(cs_paylod) 
+
+        encrypted = DynamicIVJce.encrypt(data, secret_hex_key) 
+        if encrypted:
+            encrypted_payload = encrypted
+            fund_t_response = requests.post(transaction_status, headers=headers, data=encrypted_payload.encode("utf-8"))
+
+            fund_t_response = requests.post(transaction_status, headers=headers, data=encrypted_payload.encode("utf-8"))
+
+            encrypted_payload = fund_t_response.text            
+
+            decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
+
+            if decrypted:
+                    print("Decrypted Payload:")
+                    result = json.loads(decrypted)
                     return result
             else:
                     print("Decryption failed.")

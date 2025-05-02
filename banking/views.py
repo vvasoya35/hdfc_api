@@ -108,14 +108,23 @@ class TransactionStatusAPIView(APIView):
     permission_classes = [IsAuthorizedIP]
 
     def post(self, request, *args, **kwargs):
-        transaction_id = request.data.get('transactionReferenceNumber')
+        transaction_id = request.data.get('transactionReferenceNumber', None)
+        transaction_type = request.data.get('transactionType', None)
+        transactionDate = request.data.get('transactionDate', None)
         if not transaction_id:
-
-            return Response({"error": "Transaction ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            return Response({"error": "transactionReferenceNumber is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             transaction = FundTransferTransaction.objects.get(transaction_reference_no=transaction_id)
             transaction_status = transaction.txn_status
+            if transaction is None:
+                if not transaction_id or not transaction_type or not transactionDate:
+                    return Response({"error": "transactionReferenceNumber, transactionType and transactionDate are required."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                service_response = get_transaction_status(transaction_id,transaction_type, transactionDate)
+                return Response(response_data, status=status.HTTP_200_OK)
+
 
             if transaction_status == "INITIATED":
                 service_response = get_transaction_status(transaction)
