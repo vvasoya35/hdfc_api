@@ -120,6 +120,7 @@ class TransactionStatusAPIView(APIView):
             transaction_status = transaction.txn_status
             if transaction is None:
             # if transaction:
+                print("Transaction not found")
                 if not transaction_id or not transaction_type or not transactionDate:
                     return Response({"error": "transactionReferenceNumber, transactionType and transactionDate are required."}, status=status.HTTP_400_BAD_REQUEST)
                 
