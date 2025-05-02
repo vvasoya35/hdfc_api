@@ -1,11 +1,12 @@
 {% extends "admin/change_list.html" %}
 
 {% block content_title %}
-  <h2>Fund Transfer Transactions</h2>
-  <div style="margin-bottom: 20px; padding: 10px; background: #e6f7ff; border-left: 5px solid #1890ff;">
-    <strong>📊 Today's Accepted Transactions:</strong><br>
-    ✅ Total Amount: ₹{{ today_total_amount }}<br>
-    ✅ Total Count: {{ today_total_count }} transactions
-  </div>
   {{ block.super }}
+  <div style="padding: 10px; background: #f0f8ff; border-left: 5px solid #007acc; margin-bottom: 20px;">
+    <strong>📊 Transaction Summary:</strong>
+    <ul>
+      <li><strong>✅ Today:</strong> ₹{{ today_total_amount }} ({{ today_total_count }} transactions)</li>
+      <li><strong>📅 Yesterday:</strong> ₹{{ yesterday_total_amount }} ({{ yesterday_total_count }} transactions)</li>
+    </ul>
+  </div>
 {% endblock %}
