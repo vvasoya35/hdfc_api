@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'banking.apps.BankingConfig',
-    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
