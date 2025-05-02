@@ -203,7 +203,7 @@ def get_transaction_status(transaction):
         print("Failed to get access token.")
         return {"error": "Failed to get access token."}
 
-def get_transaction_status(transactionReferenceNumber,transaction_type, transactionDate):
+def get_transaction_status_request(transactionReferenceNumber,transaction_type, transactionDate):
     # transaction_status = "https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus"
     transactionDate = transactionDate #.strftime("%d%m%Y")
     config = TransactionConfig.objects.first()

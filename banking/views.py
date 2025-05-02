@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import PaymentRequestSerializer, FundTransferRequestSerializer, GetBalanceRequestSerializer, GetBankStatementRequestSerializer
 from .models import Beneficiary, FundTransferTransaction,TransactionConfig
-from .services import get_statement, transaction_process_imps,get_transaction_status, get_auth_tokens, DynamicIVJce
+from .services import get_statement, transaction_process_imps,get_transaction_status, get_transaction_status_request, get_auth_tokens, DynamicIVJce
 from rest_framework.decorators import api_view,permission_classes 
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAdminUser
@@ -123,7 +123,7 @@ class TransactionStatusAPIView(APIView):
                 if not transaction_id or not transaction_type or not transactionDate:
                     return Response({"error": "transactionReferenceNumber, transactionType and transactionDate are required."}, status=status.HTTP_400_BAD_REQUEST)
                 
-                service_response = get_transaction_status(transaction_id,transaction_type, transactionDate)
+                service_response = get_transaction_status_request(transaction_id,transaction_type, transactionDate)
                 return Response(service_response, status=status.HTTP_200_OK)
 
 
