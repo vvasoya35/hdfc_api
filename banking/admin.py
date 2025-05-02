@@ -96,11 +96,11 @@ class FundTransferTransactionAdmin(admin.ModelAdmin):
 
             today_qs = FundTransferTransaction.objects.filter(
                 created_at__date=today,
-                txn_status__in=["ACPT"]
+                txn_status__in=["Success"]
             )
             yesterday_qs = FundTransferTransaction.objects.filter(
                 created_at__date=yesterday,
-                txn_status__in=["ACPT"]
+                txn_status__in=["Success"]
             )
 
             today_total_amount = today_qs.aggregate(Sum('amount'))['amount__sum'] or 0
