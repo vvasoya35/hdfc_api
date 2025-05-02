@@ -118,8 +118,8 @@ class TransactionStatusAPIView(APIView):
         try:
             transaction = FundTransferTransaction.objects.get(transaction_reference_no=transaction_id)
             transaction_status = transaction.txn_status
-            # if transaction is None:
-            if transaction:
+            if transaction is None:
+            # if transaction:
                 if not transaction_id or not transaction_type or not transactionDate:
                     return Response({"error": "transactionReferenceNumber, transactionType and transactionDate are required."}, status=status.HTTP_400_BAD_REQUEST)
                 
@@ -127,9 +127,9 @@ class TransactionStatusAPIView(APIView):
                 return Response(service_response, status=status.HTTP_200_OK)
 
 
-            if transaction_status == "INITIATED":
-                service_response = get_transaction_status(transaction)
-                return Response(service_response, status=status.HTTP_200_OK)
+            # if transaction_status == "INITIATED":
+            #     service_response = get_transaction_status(transaction)
+            #     return Response(service_response, status=status.HTTP_200_OK)
             else:
                 response_data = transaction.response_data
 
