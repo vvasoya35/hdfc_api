@@ -58,7 +58,7 @@ class FundTransferAPIView(APIView):
                 amount = data.get('amount')
                 payment_description = data.get('payment_description', "")
                 transaction_type = data.get('transaction_type', 'IMPS')
-                transaction_id = data.get('transaction_id', None)
+                transaction_id = data.get('transactionID', None)
                 # Get or create Beneficiary
                 beneficiary, _ = Beneficiary.objects.get_or_create(
                     account_number=beneficiary_data.get("beneficiary_account"),
