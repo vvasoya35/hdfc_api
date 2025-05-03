@@ -59,7 +59,7 @@ class FundTransferAPIView(APIView):
                 payment_description = data.get('payment_description', "")
                 transaction_type = data.get('transaction_type', 'IMPS')
                 transaction_id = data.get('transactionID', None)
-                import pdb; pdb.set_trace()
+
                 # Get or create Beneficiary
                 beneficiary, _ = Beneficiary.objects.get_or_create(
                     account_number=beneficiary_data.get("beneficiary_account"),
