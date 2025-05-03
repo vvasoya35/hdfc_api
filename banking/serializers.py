@@ -25,6 +25,7 @@ class BeneficiarySerializer(serializers.ModelSerializer):
 class FundTransferRequestSerializer(serializers.Serializer):
     beneficiary = BeneficiarySerializer()
     amount = serializers.DecimalField(max_digits=12, decimal_places=2)
+    transaction_id = serializers.CharField(required=False, allow_blank=True)
     payment_description = serializers.CharField(required=False, allow_blank=True)
     # transaction_type = serializers.ChoiceField(choices=[('IMPS', 'IMPS'), ('NEFT', 'NEFT'), ('RTGS', 'RTGS')], default='IMPS', required=False)
 

@@ -58,7 +58,7 @@ class FundTransferAPIView(APIView):
                 amount = data.get('amount')
                 payment_description = data.get('payment_description', "")
                 transaction_type = data.get('transaction_type', 'IMPS')
-
+                transaction_id = data.get('transaction_id', None)
                 # Get or create Beneficiary
                 beneficiary, _ = Beneficiary.objects.get_or_create(
                     account_number=beneficiary_data.get("beneficiary_account"),
@@ -74,6 +74,7 @@ class FundTransferAPIView(APIView):
 
                 # Save initial transaction
                 transaction = FundTransferTransaction.objects.create(
+                    transaction_id=transaction_id,
                     beneficiary=beneficiary,
                     debit_account_number=config.debit_account_number,
                     remitter_name=config.remitter_name,
