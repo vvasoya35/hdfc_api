@@ -32,15 +32,13 @@ SECRET_KEY = 'django-insecure-h9rh6l_@27t&ai4-x4u6(7g)t%h!p0-z(u%%sxn3dwjh)@d7*-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['connect.kachipukatextile.com','kachipukatextile.com','64.227.145.53','127.0.0.1','167.71.227.2']
+ALLOWED_HOSTS = ['connect.vshifttextile.com ','vshifttextile.com','127.0.0.1','64.227.136.26']
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://connect.kachipukatextile.com",
-    "https://www.kachipukatextile.com",
-    "http://64.227.145.53:8000",
-    "http://64.227.145.53",
-    "http://167.71.227.2:8000",
-    "http://167.71.227.2",
+    "https://connect.vshifttextile.com",
+    "https://www.vshifttextile.com",
+    "http://64.227.136.26:8000",
+    "http://64.227.136.26",
 ]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
