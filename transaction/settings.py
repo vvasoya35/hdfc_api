@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-h9rh6l_@27t&ai4-x4u6(7g)t%h!p0-z(u%%sxn3dwjh)@d7*-
 # SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['connect.vshifttextile.com','vshifttextile.com','127.0.0.1','64.227.136.26']
 
