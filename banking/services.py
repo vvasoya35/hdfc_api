@@ -277,7 +277,7 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
     }
 
     data = json.dumps(get_payload) 
-
+    pdb.set_trace()
     access_token = get_auth_tokens()
     if access_token:
         headers = {
