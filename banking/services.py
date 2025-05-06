@@ -315,6 +315,7 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
 
 def fetch_bank_balance():
     # get_balance_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"
+    pdb.set_trace()
     config = TransactionConfig.objects.first()
     get_balance_url = config.get_balance_url
 
