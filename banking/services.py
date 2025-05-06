@@ -277,7 +277,7 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
     }
 
     data = json.dumps(get_payload) 
-    pdb.set_trace()
+
     access_token = get_auth_tokens()
     if access_token:
         headers = {
@@ -315,7 +315,6 @@ def get_statement(start_date, end_date, numberOfTransactions, promt):
 
 def fetch_bank_balance():
     # get_balance_url = "https://apiext.uat.idfcfirstbank.com/acctenq/v2/prefetchAccount"
-    pdb.set_trace()
     config = TransactionConfig.objects.first()
     get_balance_url = config.get_balance_url
 
@@ -336,18 +335,25 @@ def fetch_bank_balance():
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/x-www-form-urlencoded",
-            "source": "KAC",
+            "source": config.source,
             "correlationId" : "523134453sad-9aazd88",
             "Content-Type":"application/octet-stream"
             }
         fund_t_response = requests.post(get_balance_url, headers=headers, data=encrypted.encode("utf-8"))
 
+        pdb.set_trace()
         encrypted_payload = fund_t_response.text
-        decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
-        decrypted_json = json.loads(decrypted)
+        try:    
+            decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
+            decrypted_json = json.loads(decrypted)
 
-        return decrypted_json
-
+            return decrypted_json
+        except :
+            try:
+                return json.loads(encrypted_payload)
+            except json.JSONDecodeError:
+                print("Failed to decode JSON from encrypted payload")
+                return {"error": "Failed to decode JSON"}
     else:
         raise Exception("Access token not found")
 
