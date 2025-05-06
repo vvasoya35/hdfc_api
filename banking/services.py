@@ -341,7 +341,6 @@ def fetch_bank_balance():
             }
         fund_t_response = requests.post(get_balance_url, headers=headers, data=encrypted.encode("utf-8"))
 
-        pdb.set_trace()
         encrypted_payload = fund_t_response.text
         try:    
             decrypted = DynamicIVJce.decrypt(encrypted_payload, secret_hex_key)
